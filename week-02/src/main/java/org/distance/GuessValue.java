@@ -43,6 +43,10 @@ public class GuessValue {
         if (target == null || target.isEmpty()) return GuessResult.NONE;
         if (guess == null || guess.isEmpty()) return GuessResult.NONE;
 
+        if (!valueIndexMap.containsKey(guess.toLowerCase()) || !valueIndexMap.containsKey(target.toLowerCase())) {
+            return GuessResult.NONE;
+        }
+
         int indexOfGuess = valueIndexMap.get(guess);
         int indexOfTarget = valueIndexMap.get(target.toLowerCase());
 
