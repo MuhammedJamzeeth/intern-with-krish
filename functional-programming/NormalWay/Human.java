@@ -1,0 +1,3 @@
+interface Human{
+	void move();
+}
