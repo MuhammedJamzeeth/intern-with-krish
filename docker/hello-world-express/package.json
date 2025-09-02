@@ -1,0 +1,7 @@
+{
+  "name": "hello-world-express",
+  "type": "module",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
