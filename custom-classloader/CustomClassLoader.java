@@ -6,9 +6,9 @@ import java.nio.file.Paths;
 public class CustomClassLoader extends ClassLoader {
     private final String classDir;
 
-    public CustomClassLoader(String claaString) {
+    public CustomClassLoader(String classString) {
         super(CustomClassLoader.class.getClassLoader());
-        this.classDir = claaString;
+        this.classDir = classString;
     }
 
     @Override

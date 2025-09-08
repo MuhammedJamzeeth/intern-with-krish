@@ -1,4 +1,3 @@
-package org.distance;
 
 public class Employee {
     private final String name;
