@@ -26,5 +26,4 @@ public class ProductClientService {
                 new Product(0L, "Default Product", "This is a default product due to service unavailability", 0, 0.0)
         );
     }
-
 }
