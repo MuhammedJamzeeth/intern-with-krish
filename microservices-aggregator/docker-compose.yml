@@ -4,8 +4,8 @@ services:
       context: ./rate-service
       dockerfile: Dockerfile
     container_name: rate-service
-    ports:
-      - "3000:3000"
+    # ports:
+    #   - "3000:3000"
     networks:
       - microservices-network
     restart: unless-stopped
@@ -15,24 +15,22 @@ services:
       context: ./allocation-service
       dockerfile: Dockerfile
     container_name: allocation-service
-    ports:
-      - "3001:3000"
+    # ports:
+    #   - "3001:3000"
     networks:
       - microservices-network
     restart: unless-stopped
-
 
   logistic-service:
     build:
       context: ./logistic-service
       dockerfile: Dockerfile
     container_name: logistic-service
-    ports:
-      - "3002:3000"
+    # ports:
+    #   - "3002:3000"
     networks:
       - microservices-network
     restart: unless-stopped
-
 
   aggregation-service:
     build:
@@ -40,7 +38,7 @@ services:
       dockerfile: Dockerfile
     container_name: aggregation-service
     ports:
-      - "3003:3000"
+      - "3000:3000"
     networks:
       - microservices-network
     depends_on:
