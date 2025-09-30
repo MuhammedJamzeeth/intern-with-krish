@@ -34,7 +34,11 @@ interface AggregatedResponse {
 app.use(express.json());
 
 const fetchData = async (url: string): Promise<any> => {
+  // to cancel the ongoing asunc operation if it takes too long
   const controller = new AbortController();
+  const timeout = setTimeout(() => {
+    controller.abort();
+  }, 5000);
 
   try {
     const response = await fetch(url, { signal: controller.signal });
@@ -48,6 +52,9 @@ const fetchData = async (url: string): Promise<any> => {
       }
     }
     return null;
+  } finally {
+    // when operation completes before timeout, clear the timeout for cleanup
+    clearTimeout(timeout);
   }
 };
 
@@ -56,9 +63,6 @@ app.get("/aggregate", async (req: Request, res: Response) => {
   const startTime = Date.now();
 
   console.log(`\n=== Aggregation Request for ${company} ===`);
-
-  const endTime = Date.now();
-  const duration = endTime - startTime;
 
   const [rateData, allocationData, logisticData] = await Promise.all([
     fetchData(
@@ -72,6 +76,10 @@ app.get("/aggregate", async (req: Request, res: Response) => {
     ) as Promise<LogisticResponse | null>,
   ]);
 
+  const endTime = Date.now();
+
+  const duration = endTime - startTime;
+
   const aggregatedResponse: AggregatedResponse = {
     company,
     time: Math.floor(Date.now() / 1000), // Current epoch time
@@ -83,8 +91,6 @@ app.get("/aggregate", async (req: Request, res: Response) => {
 
   res.json(aggregatedResponse);
 });
-
-
 
 app.listen(PORT, () => {
   console.log(`Aggregation Service is running on http://localhost:${PORT}`);

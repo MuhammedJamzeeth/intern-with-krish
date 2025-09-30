@@ -19,8 +19,10 @@ app.get("/rate", (req: Request, res: Response) => {
 
   const response: RateResponse = { company, time, value };
 
-  console.log(`Rate Service - Request for ${company}:`, response);
-  res.json(response);
+  setTimeout(() => {
+    res.json(response);
+    console.log(`Rate Service - Response for ${company}:`, response);
+  }, 6000);
 });
 
 app.listen(PORT, () => {
