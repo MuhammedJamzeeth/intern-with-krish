@@ -43,7 +43,7 @@ services:
       - microservices-network
     depends_on:
       - rate-service
-      - allocation-service
+      # - allocation-service
       - logistic-service
     restart: unless-stopped
 

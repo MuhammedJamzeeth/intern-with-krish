@@ -19,7 +19,7 @@ interface AllocationResponse {
 interface LogisticResponse {
   company: string;
   time: number;
-  location: string[];
+  locations: string[];
 }
 
 interface AggregatedResponse {
@@ -27,7 +27,7 @@ interface AggregatedResponse {
   time: number;
   value: number | string;
   allocation: number | string;
-  location: string[];
+  locations: string[];
   duration: string;
 }
 
@@ -85,7 +85,7 @@ app.get("/aggregate", async (req: Request, res: Response) => {
     time: Math.floor(Date.now() / 1000), // Current epoch time
     value: rateData ? rateData.value : "no response",
     allocation: allocationData ? allocationData.value : "no response",
-    location: logisticData ? logisticData.location : ["no response"],
+    locations: logisticData ? logisticData.locations : ["no response"],
     duration: `${duration}ms`,
   };
 

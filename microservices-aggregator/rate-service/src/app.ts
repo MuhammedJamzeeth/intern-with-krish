@@ -22,7 +22,7 @@ app.get("/rate", (req: Request, res: Response) => {
   setTimeout(() => {
     res.json(response);
     console.log(`Rate Service - Response for ${company}:`, response);
-  }, 6000);
+  }, 5001);
 });
 
 app.listen(PORT, () => {
