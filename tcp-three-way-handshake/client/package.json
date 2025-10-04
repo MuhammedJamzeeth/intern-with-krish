@@ -1,0 +1,21 @@
+{
+  "name": "tcp-three-way-handshake",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "client.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "ts-node src/client.ts",
+    "build": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.13.1",
+  "dependencies": {
+    "@types/node": "^24.6.2",
+    "eslint": "^9.37.0",
+    "ts-node": "^10.9.2"
+  }
+}
