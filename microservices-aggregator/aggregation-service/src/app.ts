@@ -5,20 +5,20 @@ const app = express();
 const PORT = 3000;
 
 interface RateResponse {
-  company: string;
-  time: number;
+  // company: string;
+  // time: number;
   value: number;
 }
 
 interface AllocationResponse {
-  company: string;
-  time: number;
+  // company: string;
+  // time: number;
   value: number;
 }
 
 interface LogisticResponse {
-  company: string;
-  time: number;
+  // company: string;
+  // time: number;
   locations: string[];
 }
 

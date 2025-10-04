@@ -5,8 +5,8 @@ const app = express();
 const PORT = 3000;
 
 interface RateResponse {
-  company: string;
-  time: number;
+  // company: string;
+  // time: number;
   value: number;
 }
 
@@ -17,11 +17,11 @@ app.get("/rate", (req: Request, res: Response) => {
   const time = Math.floor(Date.now() / 1000);
   const value = Math.floor(Math.random() * (10000 - 1000 + 1)) + 1000;
 
-  const response: RateResponse = { company, time, value };
+  const response: RateResponse = { value };
 
   setTimeout(() => {
     res.json(response);
-    console.log(`Rate Service - Response for ${company}:`, response);
+    console.log(`Rate Service - Response for ${company}: at ${time}`, response);
   }, 5001);
 });
 

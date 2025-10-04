@@ -4,9 +4,9 @@ import type { Request, Response } from "express";
 const app = express();
 const PORT = 3000;
 
-interface RateResponse {
-  company: string;
-  time: number;
+interface LogisticResponse {
+  // company: string;
+  // time: number;
   locations: string[];
 }
 
@@ -24,9 +24,12 @@ app.get("/logistic", (req: Request, res: Response) => {
   const company = (req.query.company as string) || "Unknown";
   const time = Math.floor(Date.now() / 1000);
 
-  const response: RateResponse = { company, time, locations };
+  const response: LogisticResponse = { locations };
 
-  console.log(`Logistic Service - Request for ${company}:`, response);
+  console.log(
+    `Logistic Service - Request for ${company}: at ${time}`,
+    response
+  );
   res.json(response);
 });
 
