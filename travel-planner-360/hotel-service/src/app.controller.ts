@@ -7,10 +7,10 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get('search')
-  searchHotels(
+ async searchHotels(
     @Query('destination') destination: string,
     @Query('date') date: string,
-  ): { hotels: Hotel[]; checkInDate: string } {
+  ): Promise<{ hotels: Hotel[]; checkInDate: string }> {
     return this.appService.searchHotels({ destination, date });
   }
 }

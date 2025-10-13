@@ -1,0 +1,9 @@
+tickets:
+  - id: A
+    services: [Q, S]
+
+  - id: B
+    services: [S, T]
+
+  - id: C
+    services: [Q]
