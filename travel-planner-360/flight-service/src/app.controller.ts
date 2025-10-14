@@ -11,7 +11,7 @@ export class AppController {
     @Query() query: { from: string; to: string; date: string },
   ): Promise< { flights: Flight[]; date: string }> {
 
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    // await new Promise(resolve => setTimeout(resolve, 2000));
 
     const flights = await this.appService.searchFlights({
       from: query.from,
