@@ -58,6 +58,7 @@ type Metrics = {
   apiVersionUsage: Record<string, number>;
   v1Percentage: string;
   v2Percentage: string;
+  isV1Deprecated: boolean;
   totalRequests: number;
   circuitBreaker: {
     state: string;
@@ -111,9 +112,8 @@ export default function App() {
   const [contextualLoading, setContextualLoading] = useState(false);
   const [contextualError, setContextualError] = useState<string | null>(null);
 
-  // metrics state
   const [metrics, setMetrics] = useState<Metrics | null>(null);
-  // cooldown timer (ms remaining)
+
   const [cooldownRemaining, setCooldownRemaining] = useState<number | null>(
     null
   );
@@ -137,7 +137,7 @@ export default function App() {
       const json = await res.json();
       setMetrics(json as Metrics);
     } catch (err: any) {
-      // ignore metrics errors silently for now
+      // ignore metrics errors silently for nowdd
       console.warn("fetchMetrics error:", err);
     }
   };
@@ -914,6 +914,13 @@ export default function App() {
               <div>Requests: {metrics.totalRequests}</div>
               <div className="mt-1">
                 v1: {metrics.apiVersionUsage.v1 ?? 0} ({metrics.v1Percentage})
+                <span
+                  className={`ml-2 text-xs px-1 rounded text-white ${
+                    metrics.isV1Deprecated ? "bg-red-600" : "bg-green-600"
+                  } font-medium`}
+                >
+                  {metrics.isV1Deprecated ? "Deprecated" : "Active"}
+                </span>
               </div>
               <div>
                 v2: {metrics.apiVersionUsage.v2 ?? 0} ({metrics.v2Percentage})

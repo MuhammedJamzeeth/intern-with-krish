@@ -1,10 +1,7 @@
 import { Controller, Get, Logger, Query } from '@nestjs/common';
-import { AppService } from './app.service';
 import { firstValueFrom } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
 import { CircuitBreaker } from './circute.breaker';
-
-
 
 @Controller()
 export class AppController {
@@ -18,7 +15,7 @@ export class AppController {
     v2: 0,
   };
 
-  constructor(private readonly appService: AppService) {
+  constructor() {
     this.weatherCircuitBreaker = new CircuitBreaker('WeatherService', {
       failureThreshold: 0.5,
       windowSize: 10,
@@ -27,7 +24,7 @@ export class AppController {
     });
   }
 
- @Get('/v1/trips/search')
+  @Get('/v1/trips/search')
   async searchTripsV1(
     @Query('from') from: string,
     @Query('to') to: string,
@@ -62,7 +59,9 @@ export class AppController {
 
     if (!flights || !hotels) {
       degraded = true;
-      this.logger.warn('Partial failure detected - returning degraded response');
+      this.logger.warn(
+        'Partial failure detected - returning degraded response',
+      );
     }
 
     const elapsed = Date.now() - startTime;
@@ -77,14 +76,12 @@ export class AppController {
     };
   }
 
-
   @Get('/v1/trips/cheapest-route')
   async cheapestRoute(
     @Query('from') from: string,
     @Query('to') to: string,
     @Query('date') date: string,
   ) {
-
     // Get cheapest flight by querying the Flight service's /search endpoint
     this.logger.log('Step 1: Fetching flights and selecting cheapest');
     let cheapestFlight: any = null;
@@ -96,22 +93,32 @@ export class AppController {
         return { error: 'No flights available' };
       }
 
-      cheapestFlight = flightsArray.reduce((min, f) =>
-        (f.price !== undefined && (min.price === undefined || Number(f.price) < Number(min.price))) ? f : min,
-        flightsArray[0]);
+      cheapestFlight = flightsArray.reduce(
+        (min, f) =>
+          f.price !== undefined &&
+          (min.price === undefined || Number(f.price) < Number(min.price))
+            ? f
+            : min,
+        flightsArray[0],
+      );
 
-
-      this.logger.log(`Cheapest flight: ${cheapestFlight.airline} arriving at ${cheapestFlight.arriveTime}`);
+      this.logger.log(
+        `Cheapest flight: ${cheapestFlight.airline} arriving at ${cheapestFlight.arriveTime}`,
+      );
     } catch (err: any) {
       const status = err?.response?.status ?? err?.code ?? 'unknown';
-      this.logger.error(`Error fetching flights (status=${status}): ${err?.message}`);
+      this.logger.error(
+        `Error fetching flights (status=${status}): ${err?.message}`,
+      );
       return { error: 'Flight service unavailable' };
     }
 
     const arriveHour = parseInt(cheapestFlight.arriveTime.split(':')[0]);
     const needsLateCheckIn = arriveHour >= 18; // After 6 PM
 
-    this.logger.log(`Step 2: Fetching hotels (late check-in: ${needsLateCheckIn})`);
+    this.logger.log(
+      `Step 2: Fetching hotels (late check-in: ${needsLateCheckIn})`,
+    );
     let hotels = [];
     try {
       const hotelResponse = await firstValueFrom(
@@ -123,7 +130,9 @@ export class AppController {
       this.logger.log(`Found ${hotels.length} suitable hotels`);
     } catch (err: any) {
       const status = err?.response?.status ?? err?.code ?? 'unknown';
-      this.logger.error(`Error fetching hotels (status=${status}): ${err?.message}`);
+      this.logger.error(
+        `Error fetching hotels (status=${status}): ${err?.message}`,
+      );
       hotels = [];
     }
 
@@ -143,7 +152,6 @@ export class AppController {
     @Query('to') to: string,
     @Query('date') date: string,
   ) {
-
     // Always fetch flights and hotels
     const flightPromise = this.fetchFlights(from, to, date);
     const hotelPromise = this.fetchHotels(to, date);
@@ -153,7 +161,9 @@ export class AppController {
 
     let eventsPromise = Promise.resolve(null);
     if (isCoastal) {
-      this.logger.log('Branching: Fetching beach events for coastal destination');
+      this.logger.log(
+        'Branching: Fetching beach events for coastal destination',
+      );
       eventsPromise = this.fetchEvents(to, date);
     } else {
       this.logger.log('Branching: Skipping events for inland destination');
@@ -175,7 +185,6 @@ export class AppController {
     };
   }
 
-
   // ==================== V2 WITH WEATHER ====================
   @Get('/v2/trips/search')
   async searchTripsV2(
@@ -191,7 +200,9 @@ export class AppController {
     let degraded = false;
 
     // Parallel fan-out including weather (with circuit breaker)
-    this.logger.log('Starting parallel requests to Flight, Hotel, and Weather services');
+    this.logger.log(
+      'Starting parallel requests to Flight, Hotel, and Weather services',
+    );
     const flightPromise = this.callWithTimeout(
       this.fetchFlights(from, to, date),
       timeout,
@@ -202,11 +213,9 @@ export class AppController {
     );
     const weatherPromise = this.fetchWeatherWithBreaker(to);
 
-    const [flightResult, hotelResult, weatherResult] = await Promise.allSettled([
-      flightPromise,
-      hotelPromise,
-      weatherPromise,
-    ]);
+    const [flightResult, hotelResult, weatherResult] = await Promise.allSettled(
+      [flightPromise, hotelPromise, weatherPromise],
+    );
 
     const flights =
       flightResult.status === 'fulfilled' ? flightResult.value : null;
@@ -240,10 +249,21 @@ export class AppController {
     const total = this.metrics.v1 + this.metrics.v2;
     this.logger.log('Metrics requested');
 
+    const v1Percentage = total > 0 ? (this.metrics.v1 / total) * 100 : 0;
+    const v2Percentage = total > 0 ? (this.metrics.v2 / total) * 100 : 0;
+
+    // after v2 useage exceeds 75%, consider v1 deprecated
+    let isV1Deprecated = false;
+    if (this.metrics.v2 > 0 && v2Percentage > 75) {
+      isV1Deprecated = true;
+      this.logger.warn('V1 API deprecated');
+    }
+
     return {
       apiVersionUsage: this.metrics,
-      v1Percentage: total > 0 ? ((this.metrics.v1 / total) * 100).toFixed(2) + '%' : '0%',
-      v2Percentage: total > 0 ? ((this.metrics.v2 / total) * 100).toFixed(2) + '%' : '0%',
+      v1Percentage: total > 0 ? v1Percentage.toFixed(2) + '%' : '0%',
+      v2Percentage: total > 0 ? v2Percentage.toFixed(2) + '%' : '0%',
+      isV1Deprecated,
       totalRequests: total,
       circuitBreaker: this.weatherCircuitBreaker.getStats(),
     };
@@ -265,7 +285,7 @@ export class AppController {
       },
     );
   }
-  
+
   private async fetchEvents(destination: string, date: string) {
     try {
       this.logger.debug(`Calling Events Service: ${destination}`);
@@ -274,7 +294,9 @@ export class AppController {
           `http://localhost:3004/events/search?destination=${destination}&date=${date}`,
         ),
       );
-      this.logger.debug(`Events Service returned ${response.data.events.length} events`);
+      this.logger.debug(
+        `Events Service returned ${response.data.events.length} events`,
+      );
       return response.data;
     } catch (error) {
       this.logger.error(`Events service error: ${error.message}`);
@@ -290,7 +312,9 @@ export class AppController {
           `http://localhost:3001/flights/search?from=${from}&to=${to}&date=${date}`,
         ),
       );
-      this.logger.debug(`Flight Service returned ${response.data.flights.length} flights`);
+      this.logger.debug(
+        `Flight Service returned ${response.data.flights.length} flights`,
+      );
       return response.data;
     } catch (error) {
       this.logger.error(`Flight service error: ${error.message}`);
@@ -298,7 +322,7 @@ export class AppController {
     }
   }
 
-    private async fetchWeather(destination: string) {
+  private async fetchWeather(destination: string) {
     try {
       this.logger.debug(`Calling Weather Service: ${destination}`);
       const response = await firstValueFrom(
@@ -306,7 +330,9 @@ export class AppController {
           `http://localhost:3003/weather/forecast?destination=${destination}`,
         ),
       );
-      this.logger.debug(`Weather Service returned ${response.data.forecast.length} days`);
+      this.logger.debug(
+        `Weather Service returned ${response.data.forecast.length} days`,
+      );
       return response.data;
     } catch (error) {
       this.logger.error(`Weather service error: ${error.message}`);
@@ -314,12 +340,18 @@ export class AppController {
     }
   }
 
-  private async fetchHotels(destination: string, date: string, lateCheckIn?: boolean) {
+  private async fetchHotels(
+    destination: string,
+    date: string,
+    lateCheckIn?: boolean,
+  ) {
     try {
       this.logger.debug(`Calling Hotel Service: ${destination}`);
       const url = `http://localhost:3002/hotels/search?destination=${destination}&date=${date}${lateCheckIn !== undefined ? '&lateCheckIn=' + lateCheckIn : ''}`;
       const response = await firstValueFrom(this.httpService.get(url));
-      this.logger.debug(`Hotel Service returned ${response.data.hotels.length} hotels`);
+      this.logger.debug(
+        `Hotel Service returned ${response.data.hotels.length} hotels`,
+      );
       return response.data;
     } catch (error) {
       this.logger.error(`Hotel service error: ${error.message}`);
@@ -327,7 +359,10 @@ export class AppController {
     }
   }
 
-   private async callWithTimeout<T>(promise: Promise<T>, timeoutMs: number): Promise<T> {
+  private async callWithTimeout<T>(
+    promise: Promise<T>,
+    timeoutMs: number,
+  ): Promise<T> {
     return Promise.race([
       promise,
       new Promise<T>((_, reject) =>
