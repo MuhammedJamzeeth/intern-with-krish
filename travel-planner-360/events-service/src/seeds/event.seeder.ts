@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Event } from 'src/entities/event.entity';
+import { Event } from '../entities/event.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -13,11 +13,11 @@ export class EventSeeder {
   ) {}
 
   async seed() {
-    this.logger.log('Starting event data seeding...');
+    this.logger.debug('Starting event data seeding...');
 
     const existingEvents = await this.eventRepository.count();
     if (existingEvents > 0) {
-      this.logger.log('Events already seeded. Skipping...');
+      this.logger.debug('Events already seeded. Skipping...');
       return;
     }
 
@@ -62,7 +62,7 @@ export class EventSeeder {
         destination: 'GOA',
         date: '2025-12-28',
         category: 'Beach',
-        description: 'Asia\'s biggest electronic dance music festival',
+        description: "Asia's biggest electronic dance music festival",
       },
       {
         name: 'Singapore Night Festival',
@@ -74,10 +74,16 @@ export class EventSeeder {
     ];
 
     for (const eventData of events) {
-      const event = this.eventRepository.create(eventData);
-      await this.eventRepository.save(event);
+      try {
+        const event = this.eventRepository.create(eventData);
+        await this.eventRepository.save(event);
+        this.logger.debug(`seeded event ${event.name} (${event.destination})`);
+      } catch (err) {
+        this.logger.error('Failed to seed event', err?.stack ?? err);
+        throw err;
+      }
     }
 
-    this.logger.log(`Successfully seeded ${events.length} events`);
+    this.logger.debug(`Successfully seeded ${events.length} events`);
   }
 }

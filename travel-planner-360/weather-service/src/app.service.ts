@@ -23,6 +23,7 @@ export class AppService {
       console.log(`[Weather Service] Simulating ${delayMs}ms delay`);
       await new Promise((resolve) => setTimeout(resolve, delayMs));
     }
+    
     if (Math.random() < failRate) {
       console.log(`[Weather Service] Simulating failure`);
       throw new HttpException(
