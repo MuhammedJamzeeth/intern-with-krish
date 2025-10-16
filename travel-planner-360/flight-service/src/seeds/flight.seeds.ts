@@ -30,6 +30,7 @@ export class FlightSeeder {
         arriveTime: '11:30',
         price: 250,
         duration: '3h 30m',
+        date: '2025-12-10',
       },
       {
         airline: 'Thai Airways',
@@ -39,6 +40,7 @@ export class FlightSeeder {
         arriveTime: '17:30',
         price: 180,
         duration: '3h 30m',
+        date: '2025-12-10',
       },
       {
         airline: 'Air Asia',
@@ -48,6 +50,7 @@ export class FlightSeeder {
         arriveTime: '23:30',
         price: 150,
         duration: '3h 30m',
+        date: '2025-12-11',
       },
       {
         airline: 'Emirates',
@@ -57,6 +60,7 @@ export class FlightSeeder {
         arriveTime: '16:00',
         price: 320,
         duration: '4h',
+        date: '2025-12-12',
       },
       {
         airline: 'Singapore Airlines',
@@ -66,6 +70,7 @@ export class FlightSeeder {
         arriveTime: '21:00',
         price: 380,
         duration: '4h',
+        date: '2025-12-12',
       },
       {
         airline: 'IndiGo',
@@ -75,6 +80,7 @@ export class FlightSeeder {
         arriveTime: '11:00',
         price: 120,
         duration: '2h',
+        date: '2025-12-13',
       },
       {
         airline: 'Thai AirAsia',
@@ -84,6 +90,7 @@ export class FlightSeeder {
         arriveTime: '08:30',
         price: 80,
         duration: '1h 30m',
+        date: '2025-12-14',
       },
     ];
 

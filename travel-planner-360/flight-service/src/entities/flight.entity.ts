@@ -28,4 +28,7 @@ export class Flight {
 
   @Column({ default: true })
   available: boolean;
+
+  @Column({ nullable: true })
+  date: string;
 }
