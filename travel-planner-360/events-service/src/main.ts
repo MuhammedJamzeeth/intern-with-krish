@@ -17,7 +17,11 @@ async function bootstrap() {
   try {
     const seed = app.get(EventSeeder);
     await seed.seed();
+
     logger.debug('Seeding completed successfully');
+    logger.debug(
+      `Application is running on: http://localhost:${process.env.PORT ?? 3004}`,
+    );
   } catch (err) {
     logger.error(
       'Seeding failed (seeder may not be provided)',

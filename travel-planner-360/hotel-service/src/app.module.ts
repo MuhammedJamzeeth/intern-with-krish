@@ -1,9 +1,8 @@
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { Hotel } from './entities/hotel.entity';
 import { HotelSeeder } from './seeds/hotel.seeder';
+import { HotelModule } from './hotels/hotel.module';
 
 @Module({
   imports: [
@@ -15,9 +14,8 @@ import { HotelSeeder } from './seeds/hotel.seeder';
       logging: false,
     }),
     TypeOrmModule.forFeature([Hotel]),
-  
+    HotelModule,
   ],
-  controllers: [AppController],
-  providers: [AppService, HotelSeeder],
+  providers: [HotelSeeder],
 })
 export class AppModule {}

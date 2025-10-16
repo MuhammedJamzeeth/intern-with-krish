@@ -25,4 +25,7 @@ export class Hotel {
 
   @Column({ default: true })
   available: boolean;
+
+  @Column()
+  date: string;
 }

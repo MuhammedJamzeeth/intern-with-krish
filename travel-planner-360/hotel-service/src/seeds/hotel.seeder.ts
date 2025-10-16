@@ -29,6 +29,7 @@ export class HotelSeeder {
         pricePerNight: 120,
         lateCheckIn: true,
         amenities: ['Pool', 'Gym', 'WiFi'],
+        date: '2025-12-10',
       },
       {
         name: 'Riverside Resort Bangkok',
@@ -37,6 +38,7 @@ export class HotelSeeder {
         pricePerNight: 180,
         lateCheckIn: true,
         amenities: ['Pool', 'Spa', 'Restaurant'],
+        date: '2025-12-10',
       },
       {
         name: 'Budget Inn Bangkok',
@@ -45,6 +47,7 @@ export class HotelSeeder {
         pricePerNight: 60,
         lateCheckIn: false,
         amenities: ['WiFi'],
+        date: '2025-12-11',
       },
       {
         name: 'Marina Bay Sands',
@@ -53,6 +56,7 @@ export class HotelSeeder {
         pricePerNight: 350,
         lateCheckIn: true,
         amenities: ['Pool', 'Casino', 'Spa', 'Fine Dining'],
+        date: '2025-12-12',
       },
       {
         name: 'Singapore Budget Hotel',
@@ -61,6 +65,7 @@ export class HotelSeeder {
         pricePerNight: 90,
         lateCheckIn: false,
         amenities: ['WiFi', 'Breakfast'],
+        date: '2025-12-12',
       },
       {
         name: 'Phuket Beach Resort',
@@ -69,6 +74,7 @@ export class HotelSeeder {
         pricePerNight: 200,
         lateCheckIn: true,
         amenities: ['Beach Access', 'Pool', 'Spa', 'Restaurant'],
+        date: '2025-12-15',
       },
       {
         name: 'Goa Paradise Hotel',
@@ -77,6 +83,7 @@ export class HotelSeeder {
         pricePerNight: 110,
         lateCheckIn: true,
         amenities: ['Beach View', 'Pool', 'Bar'],
+        date: '2025-12-20',
       },
     ];
 
