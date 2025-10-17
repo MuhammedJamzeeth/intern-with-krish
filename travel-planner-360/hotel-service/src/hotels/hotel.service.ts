@@ -16,13 +16,28 @@ export class HotelService {
   async searchHotels({
     destination,
     date,
+    lateCheckIn,
   }: {
     destination: string;
     date: string;
+    lateCheckIn?: boolean;
   }) {
-    const results = await this.hotelRepository.find({
-      where: { destination, date },
-    });
+    let results: Hotel[];
+
+    this.logger.debug(
+      `Searching hotels for destination: ${destination}, date: ${date}, lateCheckIn: ${lateCheckIn ? 'true' : 'false'}`,
+    );
+
+
+    if (lateCheckIn === undefined || lateCheckIn === false) {
+      results = await this.hotelRepository.find({
+        where: { destination, date },
+      });
+    } else {
+      results = await this.hotelRepository.find({
+        where: { destination, date, lateCheckIn },
+      });
+    }
 
     if (results.length === 0) {
       throw new HotelNotFoundException(
