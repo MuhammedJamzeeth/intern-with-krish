@@ -1,3 +1,11 @@
+Travel Planner Poly Repos Link
+
+1. aggregator-service: https://github.com/MuhammedJamzeeth/aggregator-service.git
+2. event-service: https://github.com/MuhammedJamzeeth/event-service.git
+3. flight-service: https://github.com/MuhammedJamzeeth/flight-service.git
+4. hotel-service: https://github.com/MuhammedJamzeeth/hotel-service.git
+5. weather-service: https://github.com/MuhammedJamzeeth/weather-service.git
+6. frontend: https://github.com/MuhammedJamzeeth/frontend-travel-planner.git
 
 // Testing V1 Scatter-Gather
 http://localhost:3000/v1/trips/search?from=CMB&to=BKK&date=2025-12-10
