@@ -6,8 +6,9 @@ This guide explains the migration from Travel Planner API v1 to v2.
 
 When migrate?
 
-I am measuring the V1 and V2 usage when V2 usage increased to 75% I will show V1 deprecated message
-to user aftert V2 usage hit 100% I will remove the V1 from code base
+I am measuring the V1 and V2 usage,for now user can use both version when user finds v2 response is better than V1 response (not included weather details)
+V2 req will be increased, when V2 req increased upto 75% we will inform user to V1 is deprecated (informs user to use V1) and
+after V2 usage hit 100% I will remove the V1 from code base
 
 What Changed?
 
