@@ -40,10 +40,39 @@ const weather = async (
 
     return {
       statusCode: 200,
-      body: JSON.stringify(response.data),
+      body: JSON.stringify({
+        weather: response.data.weather,
+        main: response.data.main,
+        wind: response.data.wind,
+        name: response.data.name,
+        temperature_celsius: response.data.main.temp - 273.15,
+        humidity: response.data.main.humidity,
+        timestamp: new Date(response.data.dt * 1000).toISOString(),
+      }),
     };
   } catch (error) {
     console.error("Error fetching weather data", error);
+
+    if (error.response) {
+      if (error.response.status === 404) {
+        return {
+          statusCode: 404,
+          body: JSON.stringify({
+            error: "City not found",
+            message: `Could not find the weather data for city ${event.queryStringParameters?.city}`,
+          }),
+        };
+      }
+
+      return {
+        statusCode: error.response.status,
+        body: JSON.stringify({
+          error: "OpenWeather API error",
+          message: error.response.message || "Unknown error",
+        }),
+      };
+    }
+
     return {
       statusCode: 500,
       body: JSON.stringify({
