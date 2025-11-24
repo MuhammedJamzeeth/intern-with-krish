@@ -1,0 +1,17 @@
+{
+  "Changes": [
+    {
+      "Action": "DELETE",
+      "ResourceRecordSet": {
+        "Name": "weather.muhammedjamzeeth.online.",
+        "Type": "CNAME",
+        "TTL": 300,
+        "ResourceRecords": [
+          {
+            "Value": "senlzrm9i8.execute-api.us-east-1.amazonaws.com"
+          }
+        ]
+      }
+    }
+  ]
+}
