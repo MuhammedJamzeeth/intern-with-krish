@@ -5,6 +5,7 @@ const serverlessConfiguration: AWS = {
   service: "serverless-weather",
   frameworkVersion: "3",
   plugins: [
+    "serverless-dotenv-plugin",
     "serverless-esbuild",
     "serverless-offline",
     "serverless-domain-manager",
@@ -21,7 +22,7 @@ const serverlessConfiguration: AWS = {
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1",
       NODE_OPTIONS: "--enable-source-maps --stack-trace-limit=1000",
-      OPENWEATHER_API_KEY: "1f4b05c66b38b5d237e084481e81616e",
+      OPENWEATHER_API_KEY: "${env:OPENWEATHER_API_KEY}",
     },
   },
   // import the function via paths
